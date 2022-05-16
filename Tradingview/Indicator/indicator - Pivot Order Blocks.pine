@@ -1,0 +1,59 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © MensaTrader
+
+//@version=5
+indicator("Pivot Order Blocks", shorttitle="Pivot - OB", overlay=true, max_bars_back=500, max_boxes_count=250)
+
+//Titles
+inputGroupTitle     = "=== Pivots ==="
+plotGroupTitle      = "=== Plots ==="
+
+
+//Inputs
+leftLenH            = input.int(title="Pivot High", defval=10, minval=1, inline="Pivot High", group=inputGroupTitle)
+rightLenH           = input.int(title="/", defval=10, minval=1, inline="Pivot High", group=inputGroupTitle)
+
+leftLenL            = input.int(title="Pivot Low", defval=10, minval=1, inline="Pivot Low", group=inputGroupTitle)
+rightLenL           = input.int(title="/", defval=10, minval=1, inline="Pivot Low", group=inputGroupTitle)
+
+boxLength           = input.int(30, title="Box Size", tooltip="Amount of candles long", group=plotGroupTitle)
+bullBoxColor        = input.color(color.new(#00E600,90), title="Bullish Box Color", group=plotGroupTitle, inline="1")
+bearBoxColor        = input.color(color.new(#FF0000,90), title="Bearish Box Color", group=plotGroupTitle, inline="1")
+
+ph                  = ta.pivothigh(leftLenH, rightLenH)
+pl                  = ta.pivotlow(leftLenL, rightLenL)
+
+//Variables
+var leftBull        = bar_index
+var rightBull       = bar_index
+var topBull         = close
+var bottomBull      = close
+
+var leftBear        = bar_index
+var rightBear       = bar_index
+var topBear         = close
+var bottomBear      = close
+
+
+//Bear Box Calc
+if ph
+    leftBear        := bar_index-leftLenH
+    rightBear       := bar_index-(leftLenH-boxLength)
+    topBear         := close>open ? close[leftLenH] : open[leftLenH]
+    bottomBear      := close>open ? open[leftLenH] : close[leftLenH]
+
+//Bull Box Calc
+if pl
+    leftBull        := bar_index-leftLenL
+    rightBull       := bar_index-(leftLenL-boxLength)
+    topBull         := close>open ? close[leftLenL] : open[leftLenL]
+    bottomBull      := close>open ? open[leftLenL] : close[leftLenL]
+     
+    
+if pl
+    bull            = box.new(left=leftBull, right=rightBull, top=topBull, bottom=bottomBull, bgcolor=color.new(bullBoxColor,80), border_color=bullBoxColor)
+
+if ph
+    bear            = box.new(left=leftBear, right=rightBear, top=topBear, bottom=bottomBear, bgcolor=color.new(bearBoxColor,80), border_color=bearBoxColor)
+
+
