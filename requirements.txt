@@ -2,3 +2,5 @@ numpy
 pandas
 plotly.express
 streamlit
+yfinnane
+yahoo-finance
