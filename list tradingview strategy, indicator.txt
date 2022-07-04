@@ -1,0 +1,3 @@
+strategy - Bitcoin Sniper 5X v1
+indicator - Wedge and Flag Finder Multi - zigzag
+indicator - Pivot Order Blocks
